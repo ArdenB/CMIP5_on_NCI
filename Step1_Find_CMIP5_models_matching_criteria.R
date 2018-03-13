@@ -11,7 +11,7 @@ library(RSQLite)
 ### 1. SET PATH ###
 
 #Directory where to copy data
-outdir <- "/g/data1/w35/amu561/CMIP5_fluxnet/CMIP5_Data"
+outdir <- "/g/data3/w28/alb561/CMIP5fetch/CMIP5_data"
 
 
 ### 2. SELECT VARIABLES AND EXPERIMENTS ###

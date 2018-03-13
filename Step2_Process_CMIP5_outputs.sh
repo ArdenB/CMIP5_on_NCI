@@ -44,10 +44,10 @@ module load R
 ####################
 
 #Outdir folder used in Step 1 
-IN_DIR="/g/data1/w35/amu561/CMIP5_fluxnet/CMIP5_Data"
+IN_DIR="/g/data3/w28/alb561/CMIP5fetch/CMIP5_data"
 
 #Desired output folder
-OUT_DIR="/g/data1/w35/amu561/CMIP5_fluxnet/Processed_CMIP5_data/"
+OUT_DIR="/g/data3/w28/alb561/CMIP5fetch/Processed_CMIP5_data"
 
 
 ######################
@@ -55,8 +55,8 @@ OUT_DIR="/g/data1/w35/amu561/CMIP5_fluxnet/Processed_CMIP5_data/"
 ######################
 
 #Set start and end year 
-year_start=1950
-year_end=2010
+year_start=1982
+year_end=2050
 
 
 
