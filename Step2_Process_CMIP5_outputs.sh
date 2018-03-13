@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -P dt6
+#PBS -P w28
 #PBS -l walltime=2:00:00
 #PBS -l mem=5000MB
 #PBS -l ncpus=1
