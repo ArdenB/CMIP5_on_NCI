@@ -7,7 +7,7 @@
 #PBS -j oe
 #PBS -q normal
 #PBS -l wd
-#PBS -l other=gdata1
+#PBS -l other=gdata3
 #PBS -l jobfs=1GB
 
 
