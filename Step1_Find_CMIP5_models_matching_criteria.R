@@ -23,7 +23,7 @@ outdir <- "/g/data3/w28/alb561/CMIP5fetch/CMIP5_data"
 
 #Variables and experiments
 variables  <- c("pr", "tas")
-experiment <- c("historical", "rcp45")
+experiment <- c("historical", "rcp85")
 mip        <- c("Amon")
 
 
@@ -42,7 +42,7 @@ ensemble <- NA #"r1i1p1"
 #If want to e.g. combine historical and RCP8.5 runs,
 #use this option, else set to FALSE
 combine  <- TRUE
-dir_name <- "historical_rcp4.5" 
+dir_name <- "historical_rcp8.5" 
 
 
 ### 5. DECIDE IF WANT LAND MASKS ###
