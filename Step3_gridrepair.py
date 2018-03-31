@@ -94,8 +94,6 @@ def repair_netcdf(sen, var, model, grids, force):
 		
 		if all(test):
 			new_grid.append(ginf)
-		else:
-			pdb.set_trace()	
 
 	pdb.set_trace()
 
