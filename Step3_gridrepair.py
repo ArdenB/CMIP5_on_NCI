@@ -19,6 +19,7 @@ import sys
 import os
 import subprocess as subp
 import argparse
+import warnings as warn
 #==============================================================================
 
 def main(args):
@@ -48,6 +49,31 @@ def repair_netcdf(sen, var, model, grids, force):
 	# ========== Set the path and the file name ==========
 	path  = "./Processed_CMIP5_data/%s/%s/%s/" % (sen, var, model)
 	fname = "%s_%s_%s_r1i1p1_mm_month_1950_2050_%s_regrid.nc" %(var, model, sen, sen)
+	fout  = "%s_%s_%s_r1i1p1_mm_month_1950_2050_%s_setgrid.nc" %(var, model, sen, sen)
+	
+	# ========== Perform the checks on the path and file ==========
+	if not os.path.isdir(path):
+		# CHeck if the folder exists
+		print ("Cannot find a dir for: \n", path)
+		return
+
+	if not os.path.isfile(path+fname):
+		# check if the file exists
+		warn.warning(
+			"WARNING: The file %s cannot be found, entering interactive debugging " 
+			% fname)
+		pdb.set_trace()
+
+	if not force:
+		# check if an existinf file exists
+		if os.path.isfile(path+fout):
+			print("A valid file already exists: %s" % fout)
+			return
+
+
+	
+
+
 	pdb.set_trace()
 
 
@@ -57,7 +83,7 @@ if __name__ == '__main__':
 	description='Arguments for grid repair'
 	parser = argparse.ArgumentParser(description=description)
 	parser.add_argument(
-		"-f", "--force", action="store_false", 
+		"-f", "--force", action="store_true", 
 		help="Force: create new netcdf even if a fixed one exists")
 	args = parser.parse_args() 
 	main(args)
