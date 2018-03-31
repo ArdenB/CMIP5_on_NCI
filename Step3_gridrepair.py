@@ -59,7 +59,8 @@ if __name__ == '__main__':
 	parser.add_argument(
 		"-f", "--force", action="store_false", 
 		help="Force: create new netcdf even if a fixed one exists")
-	main()
+	args = parser.parse_args() 
+	main(args)
 
 
 
