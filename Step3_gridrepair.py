@@ -118,7 +118,9 @@ def repair_netcdf(sen, var, model, grids, force):
 	new_grid.append('xfirst    = -180')
 	new_grid.append('xinc      = %s' %  str(
 		float(grids[grids["Model"]==model]["Longitude"]) ))
-	# Check the y values
+	
+
+	# Check the y values, if they are missing use the ones in the original grid file
 	if not (any([n.startswith("yfirst") for n in ginfo])):
 		print ("Seting the y bounds")
 		vals = []
