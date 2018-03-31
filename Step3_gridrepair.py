@@ -59,7 +59,7 @@ def repair_netcdf(sen, var, model, grids, force):
 
 	if not os.path.isfile(path+fname):
 		# check if the file exists
-		warn.warning(
+		warn.warn
 			"WARNING: The file %s cannot be found, entering interactive debugging " 
 			% fname)
 		pdb.set_trace()
@@ -84,7 +84,7 @@ def repair_netcdf(sen, var, model, grids, force):
 		any([n.startswith("xinc") for n in ginfo])
 		):
 
-		warn.warnings("Start is listed in gridfile, going interactive")
+		warn.warn("Start is listed in gridfile, going interactive")
 		pdb.set_trace()
 
 	# Set the lines to be removed
