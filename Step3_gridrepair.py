@@ -98,7 +98,7 @@ def repair_netcdf(sen, var, model, grids, force):
 		pdb.set_trace()
 
 	# Set the lines to be removed
-	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
+	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds", "xfirst", "xinc"]
 	# Create list to hold the new grid details
 	new_grid = []
 
