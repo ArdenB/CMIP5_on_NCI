@@ -61,7 +61,7 @@ def repair_netcdf(sen, var, model, grids, force):
 	# ========== Perform the checks on the path and file ==========
 	if not os.path.isdir(path):
 		# CHeck if the folder exists
-		print ("Cannot find a dir for: \n", path)
+		print ("Cannot find a dir for:", path)
 		return
 
 	if not os.path.isfile(path+fname):
