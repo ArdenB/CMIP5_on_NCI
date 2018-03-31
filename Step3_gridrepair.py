@@ -111,11 +111,17 @@ def repair_netcdf(sen, var, model, grids, force):
 	# Check and see if the start is known
 	if not (any([n.startswith("yfirst") for n in ginfo])):
 		print ("Its in the loop")
-		for ginf in ginfo:
-			if  ginf.startswith("yvals"):
-				pdb.set_trace()
-				# new_grid.append('yfirst      = -90')
-				# new_grid.append('yfirst      = %s' %   ginf.split()[2])
+		vals = []
+		for glov in range(0,len(ginfo)):
+			if  ginf0[glov].startswith("yvals"):
+				vals.append(ginf0[glov])
+			elif ginf0[glov].startswith("ybounds"):
+				vals.append(ginf0[glov])
+		if len (vals) == 2:
+			pdb.set_trace()
+		else:
+			print("Warning"	)
+			pdb.set_trace()
 	if not any([n.startswith("yinc") for n in ginfo]):
 		new_grid.append('yinc      = %s' %  str(
 			float(grids[grids["Model"]==model]["Latitude"]) ))
