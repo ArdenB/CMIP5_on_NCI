@@ -71,7 +71,9 @@ def repair_netcdf(sen, var, model, grids, force):
 			return
 
 
-	
+	# ========== Create a new grid ==========
+	# Save the current grid
+	subp.call("cdo griddes %s%s > %sGriddes" % (path, fname, path), shell=True)
 
 
 	pdb.set_trace()
