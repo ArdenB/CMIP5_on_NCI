@@ -108,7 +108,7 @@ def repair_netcdf(sen, var, model, grids, force):
 	new_grid.append('xfirst    = -180')
 	new_grid.append('xinc      = %s' %  str(
 		float(grids[grids["Model"]==model]["Longitude"]) ))
-	Check and see if the start is known
+	# Check and see if the start is known
 	if not (any([n.startswith("yfirst") for n in ginfo])):
 		print ("Its in the loop")
 		for ginf in ginfo:
