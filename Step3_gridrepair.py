@@ -115,7 +115,12 @@ def repair_netcdf(sen, var, model, grids, force):
 	# ========== Set the new grid file ==========
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s%s %s%s" % (path, path, fname, path, fout), shell=True)
-
+	# Check and see if the start is known
+	if (any([n.startswith("yfirst") for n in ginfo])):
+		pdb.set_trace()
+	if not any([n.startswith("yinc") for n in ginfo]):
+		new_grid.append('yinc      = %s' %  str(
+			float(grids[grids["Model"]==model]["Latitude"]) ))
 	pdb.set_trace()
 #==============================================================================
 
