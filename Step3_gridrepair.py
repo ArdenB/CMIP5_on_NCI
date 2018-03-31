@@ -75,8 +75,16 @@ def repair_netcdf(sen, var, model, grids, force):
 	# Save the current grid
 	subp.call("cdo griddes %s%s > %sGriddes" % (path, fname, path), shell=True)
 
+	gfile = open("%sGriddes" % path, "r") 
+	ginfo =  gfile.read().splitlines()
 
+	badel = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
+	for ginf in ginfo:
+		for be in badel:
+			pdb.set_trace()
 	pdb.set_trace()
+
+
 
 
 #==============================================================================
