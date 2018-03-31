@@ -113,7 +113,8 @@ def repair_netcdf(sen, var, model, grids, force):
 		print ("Its in the loop")
 		for ginf in ginfo:
 			if  ginf.startswith("yvals"):
-				pdb.set_trace()
+				new_grid.append('yfirst      = -90')
+				# new_grid.append('yfirst      = %s' %   ginf.split()[2])
 	if not any([n.startswith("yinc") for n in ginfo]):
 		new_grid.append('yinc      = %s' %  str(
 			float(grids[grids["Model"]==model]["Latitude"]) ))
