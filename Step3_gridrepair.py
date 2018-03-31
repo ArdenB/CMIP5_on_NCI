@@ -38,7 +38,7 @@ def main(args):
 		for var in variables:
 			for model in grids["Model"]:
 				repair_netcdf(sen, var, model, grids, args.force)
-			sys.exit()
+			# sys.exit()
 
 
 #==============================================================================
