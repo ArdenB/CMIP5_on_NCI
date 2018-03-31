@@ -74,14 +74,19 @@ def repair_netcdf(sen, var, model, grids, force):
 	# ========== Create a new grid ==========
 	# Save the current grid
 	subp.call("cdo griddes %s%s > %sGriddes" % (path, fname, path), shell=True)
+	
+	gfile    = open("%sGriddes" % path, "r") 
+	ginfo    =  gfile.read().splitlines()
+	
+	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
+	
+	new_grid = []
 
-	gfile = open("%sGriddes" % path, "r") 
-	ginfo =  gfile.read().splitlines()
-
-	badel = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
 	for ginf in ginfo:
 		for be in badel:
-			pdb.set_trace()
+			if not  ginf.startswith(be):
+				new_grid.append(ginf)
+
 	pdb.set_trace()
 
 
