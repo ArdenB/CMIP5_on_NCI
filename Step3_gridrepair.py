@@ -84,9 +84,11 @@ def repair_netcdf(sen, var, model, grids, force):
 
 	for ginf in ginfo:
 		for be in badel:
-			if not  ginf.startswith(be):
-				new_grid.append(ginf)
+			if ginf.startswith(be):
 				break
+			elif ginf == "#":
+				break
+		new_grid.append(ginf)	
 
 	pdb.set_trace()
 
