@@ -114,9 +114,9 @@ def repair_netcdf(sen, var, model, grids, force):
 		vals = []
 		for glov in range(0,len(ginfo)):
 			if  ginfo[glov].startswith("yvals"):
-				vals.append(ginf0[glov])
+				vals.append(ginfo[glov])
 			elif ginfo[glov].startswith("ybounds"):
-				vals.append(ginf0[glov])
+				vals.append(ginfo[glov])
 		if len (vals) == 2:
 			pdb.set_trace()
 		else:
