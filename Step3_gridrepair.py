@@ -83,7 +83,7 @@ def repair_netcdf(sen, var, model, grids, force):
 		) or (
 		any([n.startswith("xinc") for n in ginfo])
 		):
-		
+
 		warn.warnings("Start is listed in gridfile, going interactive")
 		pdb.set_trace()
 
@@ -106,7 +106,7 @@ def repair_netcdf(sen, var, model, grids, force):
 			new_grid.append(ginf)
 	# Add the additional material
 	new_grid.append('xfirst    = -180')
-	new_grid.append('xinc      = %d' %  float(grids[grids["Model"]==model]["Longitude"]))
+	new_grid.append('xinc      = %s' %  str(float(grids[grids["Model"]==model]["Longitude"]) ))
 
 
 	pdb.set_trace()
