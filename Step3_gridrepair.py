@@ -66,8 +66,11 @@ def repair_netcdf(sen, var, model, grids, force):
 
 	if not os.path.isfile(path+fname):
 		# check if the file exists with a different name
-		fname = "%s_%s_%s_r2i1p1_%s_1950_2050_%s_regrid.nc" %(
-			var, model, sen, units, sen)
+		for nx in range(0, 10):
+			fname = "%s_%s_%s_r%di1p1_%s_1950_2050_%s_regrid.nc" %(
+				var, model, sen, nx, units, sen)
+			if os.path.isfile(path+fname):
+				break
 		if not os.path.isfile(path+fname):
 			warn.warn(
 				"WARNING: The file %s cannot be found, entering interactive debugging " 
