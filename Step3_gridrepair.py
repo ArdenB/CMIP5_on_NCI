@@ -111,6 +111,11 @@ def repair_netcdf(sen, var, model, grids, force):
 
 	# Save the grid out
 	save_grid(path, new_grid)
+
+	# ========== Set the new grid file ==========
+	# Save the current grid
+	subp.call("cdo setgrid,%sGridFix %s%s %s%s" % (path, path, fname, path, fout), shell=True)
+
 	pdb.set_trace()
 #==============================================================================
 
@@ -119,7 +124,7 @@ def save_grid(path, grid):
 	with open((path+"GridFix"), 'w') as file_handler:
 	    for item in grid:
 	        file_handler.write("{}\n".format(item))
-    
+
 #==============================================================================
 
 if __name__ == '__main__':
