@@ -94,8 +94,8 @@ def repair_netcdf(sen, var, model, grids, force):
 		any([n.startswith("xinc") for n in ginfo])
 		):
 
-		warn.warn("Start is listed in gridfile, going interactive")
-		pdb.set_trace()
+		warn.warn("xfirst is listed in gridfile and will be overwritten")
+		# pdb.set_trace()
 
 	# Set the lines to be removed
 	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds", "xfirst", "xinc"]
