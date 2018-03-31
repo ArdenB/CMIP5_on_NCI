@@ -59,7 +59,7 @@ def repair_netcdf(sen, var, model, grids, force):
 
 	if not os.path.isfile(path+fname):
 		# check if the file exists
-		warn.warn
+		warn.warn(
 			"WARNING: The file %s cannot be found, entering interactive debugging " 
 			% fname)
 		pdb.set_trace()
