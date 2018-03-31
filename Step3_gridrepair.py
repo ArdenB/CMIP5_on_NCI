@@ -106,14 +106,20 @@ def repair_netcdf(sen, var, model, grids, force):
 			new_grid.append(ginf)
 	# Add the additional material
 	new_grid.append('xfirst    = -180')
-	new_grid.append('xinc      = %s' %  str(float(grids[grids["Model"]==model]["Longitude"]) ))
+	new_grid.append('xinc      = %s' %  str(
+		float(grids[grids["Model"]==model]["Longitude"]) ))
 
-
+	# Save the grid out
+	save_grid(path, new_grid)
 	pdb.set_trace()
+#==============================================================================
 
-
-
-
+def save_grid(path, grid):
+	"""Takes a list of elements and save them too a grid"""
+	with open((path+"GridFix"), 'w') as file_handler:
+	    for item in grid:
+	        file_handler.write("{}\n".format(item))
+    
 #==============================================================================
 
 if __name__ == '__main__':
