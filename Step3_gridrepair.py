@@ -46,7 +46,7 @@ def repair_netcdf(sen, var, model, grids, force):
 	Repairs the grid of a given netcdf file
 	"""
 	# ========== Set the path and the file name ==========
-	path  = "./Processed_CMIP5_data/%s/%s/%s" % (sen, var, model)
+	path  = "./Processed_CMIP5_data/%s/%s/%s/" % (sen, var, model)
 	fname = "%s_%s_%s_r1i1p1_mm_month_1950_2050_%s_regrid.nc" %(var, model, sen, sen)
 	pdb.set_trace()
 
