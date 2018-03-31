@@ -70,16 +70,21 @@ def repair_netcdf(sen, var, model, grids, force):
 			print("A valid file already exists: %s" % fout)
 			return
 
-
 	# ========== Create a new grid ==========
 	# Save the current grid
 	subp.call("cdo griddes %s%s > %sGriddes" % (path, fname, path), shell=True)
-	
+	# open the current grid
 	gfile    = open("%sGriddes" % path, "r") 
+	# SPlit the lines
 	ginfo    =  gfile.read().splitlines()
+	# Check and see if the start is known
+	if any([n.startswith("xfirst") for n in ginfo]):
+		warn.warnings("Start is listed in gridfile, going interactive")
+		pdb.set_trace()
 	
+	# Set the lines to be removed
 	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
-	
+	# Create list to hold the new grid details
 	new_grid = []
 
 	for ginf in ginfo:
@@ -94,6 +99,10 @@ def repair_netcdf(sen, var, model, grids, force):
 		
 		if all(test):
 			new_grid.append(ginf)
+	# Add the additional material
+	new_grid.append('yfirst    = -180')
+	new_grid.append('xinc      = %d' %  float(grids[grids["Model"]==model]["Longitude"]))
+
 
 	pdb.set_trace()
 
