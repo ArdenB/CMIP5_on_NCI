@@ -47,9 +47,16 @@ def repair_netcdf(sen, var, model, grids, force):
 	Repairs the grid of a given netcdf file
 	"""
 	# ========== Set the path and the file name ==========
+	if var == "pr":
+		units = "mm_month"
+	elif var == "tas":
+		units = "deg_C"
+	else:
+		raise ValueError("Unknown variable")
+
 	path  = "./Processed_CMIP5_data/%s/%s/%s/" % (sen, var, model)
-	fname = "%s_%s_%s_r1i1p1_mm_month_1950_2050_%s_regrid.nc" %(var, model, sen, sen)
-	fout  = "%s_%s_%s_r1i1p1_mm_month_1950_2050_%s_setgrid.nc" %(var, model, sen, sen)
+	fname = "%s_%s_%s_r1i1p1_%s_1950_2050_%s_regrid.nc" %(var, model, sen, units, sen)
+	fout  = "%s_%s_%s_r1i1p1_%s_1950_2050_%s_setgrid.nc" %(var, model, sen, units, sen)
 	
 	# ========== Perform the checks on the path and file ==========
 	if not os.path.isdir(path):
@@ -58,16 +65,19 @@ def repair_netcdf(sen, var, model, grids, force):
 		return
 
 	if not os.path.isfile(path+fname):
-		# check if the file exists
-		warn.warn(
-			"WARNING: The file %s cannot be found, entering interactive debugging " 
-			% fname)
-		pdb.set_trace()
+		# check if the file exists with a different name
+		fname = "%s_%s_%s_r2i1p1_%s_1950_2050_%s_regrid.nc" %(
+			var, model, sen, units, sen)
+		if not os.path.isfile(path+fname):
+			warn.warn(
+				"WARNING: The file %s cannot be found, entering interactive debugging " 
+				% fname)
+			pdb.set_trace()
 
 	if not force:
 		# check if an existinf file exists
 		if os.path.isfile(path+fout):
-			print("A valid file already exists: %s" % fout)
+			print("A valid file already exists for: %s" % path)
 			return
 
 	# ========== Create a new grid ==========
@@ -132,7 +142,7 @@ def repair_netcdf(sen, var, model, grids, force):
 	# ========== Set the new grid file ==========
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s%s %s%s" % (path, path, fname, path, fout), shell=True)
-	print("A file built for: %s" % fout)
+	print("A file built for: %s" % path)
 	# pdb.set_trace()
 #==============================================================================
 
