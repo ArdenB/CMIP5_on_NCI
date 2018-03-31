@@ -14,6 +14,7 @@ __email__ = "arden.burrell@gmail.com"
 import numpy as np 
 import pandas as pd
 import pdb
+import sys
 
 
 def main():
@@ -26,6 +27,15 @@ def main():
 	senarios  = ["historical_rcp8.5", "historical_rcp4.5", "historical_rcp2.6"]
 	# the downloaded variables
 	variables = ["pr", "tas"]
+
+	# ========== Create a for loop to loop over every model ==========
+
+	for sen in senarios:
+		for var in variables:
+			for model in grids["Model"]:
+				print (model)
+			sys.exit()
+
 
 
 
