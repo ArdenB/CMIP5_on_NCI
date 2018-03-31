@@ -54,6 +54,8 @@ def repair_netcdf(sen, var, model, grids, force):
 #==============================================================================
 
 if __name__ == '__main__':
+	description='Arguments for grid repair'
+	parser = argparse.ArgumentParser(description=description)
 	parser.add_argument(
 		"-f", "--force", action="store_false", 
 		help="Force: create new netcdf even if a fixed one exists")
