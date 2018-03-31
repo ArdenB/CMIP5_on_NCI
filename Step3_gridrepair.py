@@ -110,6 +110,7 @@ def repair_netcdf(sen, var, model, grids, force):
 		float(grids[grids["Model"]==model]["Longitude"]) ))
 	# Check and see if the start is known
 	if not (any([n.startswith("yfirst") for n in ginfo])):
+		print ("Its in the loop")
 		for ginf in ginfo:
 			if  ginf.startswith("yvals"):
 				pdb.set_trace()
