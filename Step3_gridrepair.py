@@ -108,9 +108,9 @@ def repair_netcdf(sen, var, model, grids, force):
 	new_grid.append('xfirst    = -180')
 	new_grid.append('xinc      = %s' %  str(
 		float(grids[grids["Model"]==model]["Longitude"]) ))
-	# Check and see if the start is known
+	# Check the y values
 	if not (any([n.startswith("yfirst") for n in ginfo])):
-		print ("Its in the loop")
+		print ("Seting the y bounds")
 		vals = []
 		for glov in range(0,len(ginfo)):
 			if  ginfo[glov].startswith("yvals"):
@@ -118,13 +118,13 @@ def repair_netcdf(sen, var, model, grids, force):
 			elif ginfo[glov].startswith("ybounds"):
 				vals.append(glov)
 		if len (vals) == 2:
-			pdb.set_trace()
+			sp = ""
+			new_grid.append(sp.join(ginfo[vals[0]:vals[1]]))
+
 		else:
 			print("Warning"	)
 			pdb.set_trace()
-	if not any([n.startswith("yinc") for n in ginfo]):
-		new_grid.append('yinc      = %s' %  str(
-			float(grids[grids["Model"]==model]["Latitude"]) ))
+			raise IndexError("Bounding is incorrect")
 
 	# Save the grid out
 	save_grid(path, new_grid)
@@ -133,7 +133,7 @@ def repair_netcdf(sen, var, model, grids, force):
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s%s %s%s" % (path, path, fname, path, fout), shell=True)
 	print("A file built for: %s" % fout)
-	pdb.set_trace()
+	# pdb.set_trace()
 #==============================================================================
 
 def save_grid(path, grid):
