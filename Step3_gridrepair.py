@@ -78,10 +78,15 @@ def repair_netcdf(sen, var, model, grids, force):
 	# SPlit the lines
 	ginfo    =  gfile.read().splitlines()
 	# Check and see if the start is known
-	if any([n.startswith("xfirst") for n in ginfo]):
+	if (
+		any([n.startswith("xfirst") for n in ginfo])
+		) or (
+		any([n.startswith("xinc") for n in ginfo])
+		):
+		
 		warn.warnings("Start is listed in gridfile, going interactive")
 		pdb.set_trace()
-	
+
 	# Set the lines to be removed
 	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
 	# Create list to hold the new grid details
@@ -100,7 +105,7 @@ def repair_netcdf(sen, var, model, grids, force):
 		if all(test):
 			new_grid.append(ginf)
 	# Add the additional material
-	new_grid.append('yfirst    = -180')
+	new_grid.append('xfirst    = -180')
 	new_grid.append('xinc      = %d' %  float(grids[grids["Model"]==model]["Longitude"]))
 
 
