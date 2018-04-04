@@ -31,6 +31,7 @@ def main(args):
 
 	# ========== Set up the Key Infomation ==========
 	fname   = args.fname
+	# fname = "/srv/ccrc/data45/z3466821/CMIP5fetch/Processed_CMIP5_data/historical_rcp8.5/pr/ACCESS1-0/Merged_pr_ACCESS1-0_historical_rcp8.5_lonfix.nc"
 
 	# ========== Create a for loop to loop over every model ==========
 	fcleanup = repair_netcdf(fname, grids)
@@ -44,7 +45,6 @@ def repair_netcdf(fname, grids):
 
 	# ========== Set the path and the file name ==========
 	# fname = "%s_%s_%s_r1i1p1_%s_1950_2050_%s_regrid.nc" %(var, model, sen, units, sen)
-	pdb.set_trace()
 	fout  = "%s_setgrid.nc" % (fname)
 	
 	# ========== Create a list of files to cleanup ==========
@@ -93,6 +93,7 @@ def repair_netcdf(fname, grids):
 		if all(test):
 			new_grid.append(ginf)
 	# Add the additional material
+	pdb.set_trace()
 	new_grid.append('xfirst    = -180')
 	new_grid.append('xinc      = %s' %  str(
 		float(grids[grids["Model"]==model]["Longitude"]) ))
