@@ -45,7 +45,7 @@ def repair_netcdf(fname, grids):
 
 	# ========== Set the path and the file name ==========
 	# fname = "%s_%s_%s_r1i1p1_%s_1950_2050_%s_regrid.nc" %(var, model, sen, units, sen)
-	fout  = "%s_setgrid.nc" % (fname)
+	fout  = "%s_setgrid" % (fname)
 	
 	# ========== Create a list of files to cleanup ==========
 	cleanup = []
@@ -68,15 +68,17 @@ def repair_netcdf(fname, grids):
 	# Check and see if the start is known
 	if (
 		any([n.startswith("xfirst") for n in ginfo])
-		) or (
+		) and (
 		any([n.startswith("xinc") for n in ginfo])
 		):
-		warn.warn("xfirst is listed in gridfile and will be overwritten")
-		pdb.set_trace()
-		# pdb.set_trace()
+		addxdet = False
+		# Set the lines to be removed
+		badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds"]
+	else:
+		addxdet = True
+		# Set the lines to be removed
+		badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds", "xfirst", "xinc"]
 
-	# Set the lines to be removed
-	badel    = ["xvals", "yvals", "     ", "xbounds", "ybounds", "xfirst", "xinc"]
 	# Create list to hold the new grid details
 	new_grid = []
 
@@ -92,11 +94,13 @@ def repair_netcdf(fname, grids):
 		
 		if all(test):
 			new_grid.append(ginf)
-	# Add the additional material
-	pdb.set_trace()
-	new_grid.append('xfirst    = -180')
-	new_grid.append('xinc      = %s' %  str(
-		float(grids[grids["Model"]==model]["Longitude"]) ))
+	# Add the additional x variables
+	if addxdet:
+		# work out the model from the fname
+		model = fname.split("/")[-2]
+		new_grid.append('xfirst    = -180')
+		new_grid.append('xinc      = %s' %  str(
+			float(grids[grids["Model"]==model]["Longitude"]) ))
 	
 
 	# Check the y values, if they are missing use the ones in the original grid file
@@ -113,25 +117,28 @@ def repair_netcdf(fname, grids):
 			new_grid.append(sp.join(ginfo[vals[0]:vals[1]]))
 
 		else:
-			print("Warning"	)
-			pdb.set_trace()
+			print("\n")
 			raise IndexError("Bounding is incorrect")
 
 	# Save the grid out
-	save_grid(path, new_grid)
+	newgrid = save_grid(fname, new_grid)
+	cleanup.append(newgrid)
 
 	# ========== Set the new grid file ==========
 	# Save the current grid
-	subp.call("cdo setgrid,%sGridFix %s%s %s%s" % (path, path, fname, path, fout), shell=True)
-	print("A file built for: %s" % path)
-	# pdb.set_trace()
+	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
+	warn.warn("A file built for: %s" % path)
+	pdb.set_trace()
 #==============================================================================
 
 def save_grid(path, grid):
 	"""Takes a list of elements and save them too a grid"""
-	with open((path+"GridFix"), 'w') as file_handler:
+	with open(("%sGridFix" % fname), 'w') as file_handler:
 	    for item in grid:
 	        file_handler.write("{}\n".format(item))
+
+	# Return the name of the file
+    return "%sGridFix" % fname
 
 #==============================================================================
 
