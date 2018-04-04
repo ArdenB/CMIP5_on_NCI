@@ -131,7 +131,7 @@ def repair_netcdf(fname, grids):
 	pdb.set_trace()
 #==============================================================================
 
-def save_grid(path, grid):
+def save_grid(fname, grid):
 	"""Takes a list of elements and save them too a grid"""
 	with open(("%sGridFix" % fname), 'w') as file_handler:
 	    for item in grid:
