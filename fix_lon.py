@@ -127,7 +127,7 @@ def repair_netcdf(fname, grids):
 	# ========== Set the new grid file ==========
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
-	warn.warn("A file built for: %s" % path)
+	warn.warn("A file built for: %s" % fname)
 	pdb.set_trace()
 #==============================================================================
 
