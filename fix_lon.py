@@ -120,7 +120,7 @@ def repair_netcdf(fname, grids):
 			elif ginfo[glov].startswith("ybounds"):
 				vals.append(glov)
 		if len (vals) == 2:
-			sp = ""
+			sp = "\n"
 			pdb.set_trace()
 			new_grid.append(sp.join(ginfo[vals[0]:vals[1]]))
 
