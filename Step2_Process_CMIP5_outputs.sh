@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#PBS -P w28
+#PBS -P dt6
 #PBS -l walltime=3:00:00
 #PBS -l mem=5000MB
 #PBS -l ncpus=1
 #PBS -j oe
 #PBS -q normal
 #PBS -l wd
-#PBS -l other=gdata3
+#PBS -l other=gdata1
 #PBS -l jobfs=1GB
 
 
@@ -16,8 +16,7 @@
 # ii) converts required variables to desired units,
 # iii) extracts desired time period
 # iiii) masks out non-land grid cells
-# iiiii) regrids data from Pacific- to Greenwich-central (note longitude still
-#        ranges 0-360 as not sure how to fix this in NCL, use Step3 R code to fix this)
+# iiiii) regrids data from Pacific- to Greenwich-central
 
 
 # Note:
@@ -35,8 +34,8 @@
 
 module load cdo
 module load nco
-module load ncl
 module load R
+module load python
 
 
 ####################
@@ -48,7 +47,6 @@ IN_DIR="/g/data3/w28/alb561/CMIP5fetch/CMIP5_data"
 
 #Desired output folder
 OUT_DIR="/g/data3/w28/alb561/CMIP5fetch/Processed_CMIP5_data"
-=======
 
 
 
@@ -57,11 +55,11 @@ OUT_DIR="/g/data3/w28/alb561/CMIP5fetch/Processed_CMIP5_data"
 ######################
 
 #Set start and end year 
-#year_start=1982
-=======
 year_start=1950
 year_end=2050
 
+#Set if want data masked for oceans !!!! NB. only currently applied to Amon/pr and Amon/tas !!!!!!!!!
+mask_oceans="FALSE"
 
 
 #-------------------------------------------------------------------------------
@@ -223,11 +221,19 @@ do
                 #Create output file
                 out_file="${processed_file}_deg_C_${year_start}_${year_end}_${E}.nc"
 
-                #Mask ocean cells
-                cdo -L div $in_file -gec,99 $mask_file  ${processed_file}_temp.nc
+
+                if [[ $mask_oceans == "TRUE" ]]; then
+                  
+                  #Mask ocean cells
+                  cdo -L div $in_file -gec,99 $mask_file  ${processed_file}_temp.nc
+                  
+                  #Replace input file for next step
+                  in_file=${processed_file}_temp.nc
+                  
+                fi
 
                 #Convert Kelvin to Celsius
-                cdo expr,'tas=tas-273.15' -selyear,$year_start/$year_end -setunit,'degrees C' ${processed_file}_temp.nc $out_file
+                cdo expr,'tas=tas-273.15' -selyear,$year_start/$year_end -setunit,'degrees C' $in_file $out_file
 
                 rm ${processed_file}_temp.nc
 
@@ -270,11 +276,19 @@ do
                 #Create output file
                 out_file="${processed_file}_mm_month_${year_start}_${year_end}_${E}.nc"
 
-                #Mask ocean cells
-                cdo -L div $in_file -gec,99 $mask_file  ${processed_file}_temp.nc
+                #Mask oceans
+                if [[ $mask_oceans == "TRUE" ]]; then
+                  
+                  #Mask ocean cells
+                  cdo -L div $in_file -gec,99 $mask_file  ${processed_file}_temp.nc
+                  
+                  #Replace input file for next step
+                  in_file=${processed_file}_temp.nc
+                  
+                fi
 
                 #Convert from kg m-2 s-1 to mm/month
-                cdo muldpm -expr,'pr=pr*60*60*24' -selyear,$year_start/$year_end -setunit,'mm/month' ${processed_file}_temp.nc ${processed_file}_temp1.nc
+                cdo muldpm -expr,'pr=pr*60*60*24' -selyear,$year_start/$year_end -setunit,'mm/month' $in_file ${processed_file}_temp1.nc
 
                 #Replace negative rainfall with zero
                 ncap2 -s 'where(pr < 0) pr=0' -O ${processed_file}_temp1.nc $out_file
@@ -453,9 +467,9 @@ do
             fi
             
                 
-            ############################################################################
-            ###--- Crop and regrid output file from Pacific- to Greenwich-central ---###
-            ############################################################################
+            ###################################################################
+            ###--- Regrid output file from Pacific- to Greenwich-central ---###
+            ###################################################################
 
             # Modify output file name
             outfile_regrid=${out_file%".nc"}"_regrid.nc"
@@ -489,47 +503,22 @@ do
             #All other models
             else
 
-				        #Temp file name if cropping outputs
-				        #outfile_temp=${out_file%".nc"}"_temp.nc"
 
-				        #Set inputs
-                export INPUTFILE=$out_file
-                export OUTPUTFILE=$outfile_regrid 
-                
-                #Use this if cropping
-                #export OUTPUTFILE=$outfile_temp
+                        #Regrid using CDO sellonlatbox (note this adjusts lon variable
+                #to range [-180, 180] but not lon_bounds)
+                        cdo sellonlatbox,-180,180,-90,90 $out_file $outfile_regrid
 
-                
-                #Run NCL code to regrid (must be in the same folder as this code)
-                #Not ideal but can't find linked ncl function otherwise, not sure how to fix.
-                ncl fix_cmip_lon.ncl
+                #Above CDO command doesn't fix lon_bounds, using a python
+                #script to fix these (provided by Arden)
+                python fix_lon.py "${outfile_regrid}"
 
-				        #Then crop to extent
-				        #cdo sellonlatbox,$ext $outfile_temp $outfile_regrid
-
-				        #Remove temp file if cropping
-				        #rm $outfile_temp
+                        #Remove temp file if cropping
+                        #rm $outfile_temp
 
             fi
 
-            ### Fix longitude range ###
-            
-            #Changes lon range from 0-360 to (-180)-180
-            #Not sure how to do this in NCL so running a R script
-            cat > R_fix_lon.R << EOF
-
-            #Source function
-            source("fix_lon_range.R")
-
-            fix_lon_range("${outfile_regrid}")
-
-EOF
-            #Run and tidy up
-            Rscript R_fix_lon.R
-            rm R_fix_lon.R
-
-			      #Remove non-regridded file and merged time file
-			      rm $out_file
+                  #Remove non-regridded file and merged time file
+                  rm $out_file
 
             ###########################################
             ###--- Data quality and error checks ---###
@@ -550,7 +539,7 @@ EOF
             #(mean not properly calculated, doesn't weight cells by area. Only for guidance)
             check_dir="${OUT_DIR}/Data_checks/${E}/${var_short}/Global_mean/"
             mkdir -p $check_dir
-			      cdo fldmean $outfile_regrid ${check_dir}/${M}_global_mean_${var_short}.nc
+                  cdo fldmean $outfile_regrid ${check_dir}/${M}_global_mean_${var_short}.nc
 
 
 
@@ -569,39 +558,29 @@ EOF
                     cat > R_plot.R << EOF
                     library(raster)
                     library(ncdf4)
-
-
                     ### Map of first time slice ###
                     files_regrid <- list.files(path="${OUT_DIR}/${E}/${var_short}/${M}/", recursive=TRUE, 
                                                pattern="regrid.nc", full.names=TRUE)    #regridded
                                                
                     data_regrid <- lapply(files_regrid, brick, stopIfNotEqualSpaced=FALSE)
-
-
                     pdf("${plot_dir}/${var_short}_${E}_${M}_monthly_mean_regridded.pdf", 
                         height=5, width=8)
                     par(mai=c(0.2,0.2,0.2,0.6))
                     par(mfcol=c(ceiling(sqrt(length(data_regrid))), ceiling(sqrt(length(data_regrid)))))
                     lapply(data_regrid, function(x) plot(mean(x), ylab="", xlab="", yaxt="n", xaxt="n"))
                     dev.off()
-
-
-                		### Global mean time series ###
-                		files_mean <- list.files(path="${check_dir}", recursive=TRUE, 
+                        ### Global mean time series ###
+                        files_mean <- list.files(path="${check_dir}", recursive=TRUE, 
                                              pattern="${M}_global_mean", full.names=TRUE)
-
-                		nc_handles <- lapply(files_mean, nc_open)
-                		nc_data    <- lapply(nc_handles, ncvar_get, varid="${var_short}")
-
-                		pdf("${plot_dir}/${var_short}_${E}_${M}_global_mean_timeseries.pdf", 
+                        nc_handles <- lapply(files_mean, nc_open)
+                        nc_data    <- lapply(nc_handles, ncvar_get, varid="${var_short}")
+                        pdf("${plot_dir}/${var_short}_${E}_${M}_global_mean_timeseries.pdf", 
                         height=13, width=40)
-                		par(mai=c(0.2,0.2,0.2,0.6))
-                		par(mfcol=c(ceiling(sqrt(length(nc_data))), ceiling(sqrt(length(nc_data)))))
-                		lapply(nc_data, function(x) plot(x, type="l", col="blue", ylab="", xlab="", 
+                        par(mai=c(0.2,0.2,0.2,0.6))
+                        par(mfcol=c(ceiling(sqrt(length(nc_data))), ceiling(sqrt(length(nc_data)))))
+                        lapply(nc_data, function(x) plot(x, type="l", col="blue", ylab="", xlab="", 
                            yaxt="n", xaxt="n"))
-                		dev.off()
-
-
+                        dev.off()
 EOF
 
                     #Run script and remove afterwards
@@ -614,27 +593,5 @@ EOF
     done #vars
 
 done #experiments
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
