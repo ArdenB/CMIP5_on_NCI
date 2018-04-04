@@ -39,7 +39,6 @@ def main(args):
 	fcleanup = repair_netcdf(fname, grids)
 
 	# ========== cleanup the files ==========
-	pdb.set_trace()
 	for file in fcleanup:
 		os.remove(file)
 
@@ -136,9 +135,7 @@ def repair_netcdf(fname, grids):
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
 	
 	if not os.path.isfile("%s.nc" % fout):
-		warn.warn("The otput file was not created, going interactive")
-		pdb.set_trace()
-	# warn.warn("A file built for: %s" % fname)
+		raise IOError("The output file was not created, going interactive")
 	
 	# ========== return the files to be removed ==========
 	cleanup.append("%s.nc" % fname)
