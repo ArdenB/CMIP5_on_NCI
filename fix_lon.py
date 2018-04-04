@@ -138,7 +138,7 @@ def save_grid(path, grid):
 	        file_handler.write("{}\n".format(item))
 
 	# Return the name of the file
-    return "%sGridFix" % fname
+    return ("%sGridFix" % fname)
 
 #==============================================================================
 
