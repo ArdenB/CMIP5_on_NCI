@@ -151,8 +151,9 @@ def save_grid(fname, grid):
 	with open(("%sGridFix" % fname), 'w') as file_handler:
 	    for item in grid:
 	        file_handler.write("{}\n".format(item))
-        # Return the name of the file
-		return ("%sGridFix" % fname)
+	        pass
+    # Return the name of the file
+	return ("%sGridFix" % fname)
 
 #==============================================================================
 
