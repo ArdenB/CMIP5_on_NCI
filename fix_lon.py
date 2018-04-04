@@ -51,7 +51,7 @@ def repair_netcdf(fname, grids):
 	cleanup = []
 
 	# ========== Check if the file exists ==========
-	if not os.path.isfile(path+fname):
+	if not os.path.isfile(fname+".nc"):
 		# check if the file exists with a different name
 		raise IOError("WARNING: The file %s cannot be found"% fname)
 
