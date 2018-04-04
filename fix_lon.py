@@ -107,7 +107,7 @@ def repair_netcdf(fname, grids):
 
 	# Check the y values, if they are missing use the ones in the original grid file
 	if not (any([n.startswith("yfirst") for n in ginfo])):
-		print ("Seting the y bounds")
+		# print ("Seting the y bounds")
 		vals = []
 		for glov in range(0,len(ginfo)):
 			if  ginfo[glov].startswith("yvals"):
@@ -129,6 +129,8 @@ def repair_netcdf(fname, grids):
 	# ========== Set the new grid file ==========
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
+	if not os.path.isfile("%s.nc" % fout):
+		pdb.set_trace()
 	# warn.warn("A file built for: %s" % fname)
 	
 	# ========== Cleanup the intermediate files ==========
