@@ -120,9 +120,8 @@ def repair_netcdf(fname, grids):
 			elif ginfo[glov].startswith("ybounds"):
 				vals.append(glov)
 		if len (vals) == 2:
-			sp = "\n"
-			pdb.set_trace()
-			new_grid.append(sp.join(ginfo[vals[0]:vals[1]]))
+			for yv in ginfo[vals[0]:vals[1]]:
+				new_grid.append(yv)
 
 		else:
 			print("\n")
@@ -137,7 +136,7 @@ def repair_netcdf(fname, grids):
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
 	
 	if not os.path.isfile("%s.nc" % fout):
-		warn.warn("The ootput file was not created, going interactive")
+		warn.warn("The otput file was not created, going interactive")
 		pdb.set_trace()
 	# warn.warn("A file built for: %s" % fname)
 	
