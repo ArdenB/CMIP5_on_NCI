@@ -121,6 +121,7 @@ def repair_netcdf(fname, grids):
 				vals.append(glov)
 		if len (vals) == 2:
 			sp = ""
+			pdb.set_trace()
 			new_grid.append(sp.join(ginfo[vals[0]:vals[1]]))
 
 		else:
