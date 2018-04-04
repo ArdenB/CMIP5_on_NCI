@@ -21,7 +21,7 @@ import sys
 import os
 import subprocess as subp
 import argparse
-import warnings as warn
+# import warnings as warn
 #==============================================================================
 
 def main(args):
@@ -30,9 +30,10 @@ def main(args):
 	grids   = pd.read_csv("./CMIP5model_lookup.csv", header=0)
 
 	# ========== Set up the Key Infomation ==========
-	pdb.set_trace()
 	fname   = args.fname
-	# fname = "/srv/ccrc/data45/z3466821/CMIP5fetch/Processed_CMIP5_data/historical_rcp8.5/pr/ACCESS1-0/Merged_pr_ACCESS1-0_historical_rcp8.5_lonfix.nc"
+	# CHeck if the file ends with .nc
+	if fname.endswith(".nc"):
+		fname = fname[:-3]
 
 	# ========== Create a for loop to loop over every model ==========
 	fcleanup = repair_netcdf(fname, grids)
@@ -128,8 +129,9 @@ def repair_netcdf(fname, grids):
 	# ========== Set the new grid file ==========
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
-	warn.warn("A file built for: %s" % fname)
+	# warn.warn("A file built for: %s" % fname)
 	
+	# ========== Cleanup the intermediate files ==========
 	cleanup.append("%s.nc" % fname)
 	for file in cleanup:
 		os.remove(file)
