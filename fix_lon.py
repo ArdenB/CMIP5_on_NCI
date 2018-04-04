@@ -30,6 +30,7 @@ def main(args):
 	grids   = pd.read_csv("./CMIP5model_lookup.csv", header=0)
 
 	# ========== Set up the Key Infomation ==========
+	pdb.set_trace()
 	fname   = args.fname
 	# fname = "/srv/ccrc/data45/z3466821/CMIP5fetch/Processed_CMIP5_data/historical_rcp8.5/pr/ACCESS1-0/Merged_pr_ACCESS1-0_historical_rcp8.5_lonfix.nc"
 
@@ -128,7 +129,10 @@ def repair_netcdf(fname, grids):
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
 	warn.warn("A file built for: %s" % fname)
-	pdb.set_trace()
+	
+	cleanup.append("%s.nc" % fname)
+	for file in cleanup:
+		os.remove(file)
 #==============================================================================
 
 def save_grid(fname, grid):
