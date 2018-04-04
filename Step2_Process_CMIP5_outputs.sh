@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#PBS -P dt6
+#PBS -P w28
 #PBS -l walltime=3:00:00
 #PBS -l mem=5000MB
 #PBS -l ncpus=1
 #PBS -j oe
 #PBS -q normal
 #PBS -l wd
-#PBS -l other=gdata1
+#PBS -l other=gdata3
 #PBS -l jobfs=1GB
 
 
@@ -35,7 +35,8 @@
 module load cdo
 module load nco
 module load R
-module load python
+# module load python
+export PATH="/g/data3/w28/alb561/miniconda2/bin:$PATH"
 
 
 ####################
