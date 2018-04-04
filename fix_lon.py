@@ -38,6 +38,11 @@ def main(args):
 	# ========== Create a for loop to loop over every model ==========
 	fcleanup = repair_netcdf(fname, grids)
 
+	# ========== cleanup the files ==========
+	pdb.set_trace()
+	for file in fcleanup:
+		os.remove(file)
+
 
 #==============================================================================
 def repair_netcdf(fname, grids):
@@ -129,14 +134,16 @@ def repair_netcdf(fname, grids):
 	# ========== Set the new grid file ==========
 	# Save the current grid
 	subp.call("cdo setgrid,%sGridFix %s.nc %s.nc" % (fname, fname, fout), shell=True)
+	
 	if not os.path.isfile("%s.nc" % fout):
+		warn.warn("The ootput file was not created, going interactive")
 		pdb.set_trace()
 	# warn.warn("A file built for: %s" % fname)
 	
-	# ========== Cleanup the intermediate files ==========
+	# ========== return the files to be removed ==========
 	cleanup.append("%s.nc" % fname)
-	for file in cleanup:
-		os.remove(file)
+	return cleanup
+
 #==============================================================================
 
 def save_grid(fname, grid):
